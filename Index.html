@@ -1,0 +1,266 @@
+
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8"></meta>  
+    <title>QR Code Generator Using HTML CSS and JAVASCRIPT</title>
+    <style>
+
+      /* Import Google Font - Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+body{
+  display: flex;
+  padding: 0 10px;
+  min-height: 100vh;
+  align-items: center;
+  background: #ffffff;
+  justify-content: center;
+}
+
+/* Theme toggle button */
+#theme-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 999;
+}
+
+/* Dark theme styles */
+body.dark {
+  background: #1e1e1e;
+  color: #f5f5f5;
+}
+
+body.dark .wrapper {
+  background: #2c2c2c;
+}
+
+body.dark header p {
+  color: #ccc;
+}
+
+body.dark .form input {
+  background: #444;
+  color: #fff;
+  border: 1px solid #666;
+}
+
+body.dark .form input::placeholder {
+  color: #aaa;
+}
+
+body.dark .form button,
+body.dark #download {
+  background: #ffb701d9; 
+}
+
+body.dark .qr-code {
+  border-color: #555;
+}
+
+.wrapper{
+  height: 265px;
+  max-width: 410px;
+  background: #fff;
+  border-radius: 7px;
+  padding: 20px 25px 0;
+  transition: height 0.2s ease;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+.wrapper.active{
+  height: 530px;
+}
+header h1{
+  font-size: 21px;
+  font-weight: 500;
+}
+header p{
+  margin-top: 5px;
+  color: #575757;
+  font-size: 16px;
+}
+.wrapper .form{
+  margin: 20px 0 25px;
+}
+.form :where(input, button){
+  width: 100%;
+  height: 55px;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  transition: 0.1s ease;
+}
+.form input{
+  font-size: 18px;
+  padding: 0 17px;
+  border: 1px solid #999;
+}
+.form input:focus{
+  box-shadow: 0 3px 6px rgba(0,0,0,0.13);
+}
+.form input::placeholder{
+  color: #999;
+}
+.form button{
+  color: #fff;
+  cursor: pointer;
+  margin-top: 20px;
+  font-size: 17px;
+  background: #ff7402;
+}
+.qr-code {
+  opacity: 0;
+  display: flex;
+  flex-direction: column;    
+  align-items: center;        
+  justify-content: center;
+  padding: 20px;
+  border-radius: 5px;
+  pointer-events: none;
+  border: 1px solid #ccc;
+  width: 100%;                
+  box-sizing: border-box;
+}
+
+.wrapper.active .qr-code{
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.5s 0.05s ease;
+}
+.qr-code img {
+  width: 150px;
+  height: auto;
+  display: block;
+  margin-bottom: 10px;
+}
+
+
+#download {
+  margin-top: 15px;
+  background: #05b214; 
+  color: white;
+  font-size: 15px;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+
+
+
+
+
+@media (max-width: 430px){
+  .wrapper{
+    height: 255px;
+    padding: 16px 20px;
+  }
+  .wrapper.active{
+    height: 510px;
+  }
+  header p{
+    color: #696969;
+  }
+  .form :where(input, button){
+    height: 52px;
+  }
+  .qr-code img{
+    width: 160px;
+  }  
+}
+
+
+    </style>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"></meta>
+  </head>
+  <body>
+    <button id="theme-toggle" aria-label="Toggle Theme">🌙</button>
+    <div class="wrapper">
+      <header>
+        <h1>QR Code Generator</h1>
+        <p>Paste any url or enter text to create QR code</p>
+      </header>
+      <div class="form">
+        <input placeholder="Enter text or url" spellcheck="false" type="text" />
+        <button>Generate QR Code</button>
+      </div>
+      <div class="qr-code">
+  <img alt="qr-code" src="" />
+   <button id="download" style="display: none;">Download QR</button>
+</div>
+</div>
+
+  
+<script>
+    const themeToggle = document.getElementById("theme-toggle");
+
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark");
+  themeToggle.textContent = "☀️";
+}
+
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+  const isDark = document.body.classList.contains("dark");
+  themeToggle.textContent = isDark ? "☀️" : "🌙";
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+});
+
+  const wrapper = document.querySelector(".wrapper"),
+        qrInput = wrapper.querySelector(".form input"),
+        generateBtn = wrapper.querySelector(".form button"),
+        qrImg = wrapper.querySelector(".qr-code img"),
+        downloadBtn = document.getElementById("download");
+
+  let preValue;
+
+  generateBtn.addEventListener("click", () => {
+    let qrValue = qrInput.value.trim();
+    if (!qrValue || preValue === qrValue) return;
+    preValue = qrValue;
+    generateBtn.innerText = "Generating QR Code...";
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrValue)}`;
+    
+    qrImg.addEventListener("load", () => {
+      wrapper.classList.add("active");
+      generateBtn.innerText = "Generate QR Code";
+      downloadBtn.style.display = "block"; // Show download button
+    });
+  });
+
+
+  downloadBtn.addEventListener("click", () => {
+    const imageURL = qrImg.src;
+    const link = document.createElement("a");
+    link.href = imageURL;
+    link.download = "qr-code.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+
+
+
+  qrInput.addEventListener("keyup", () => {
+    if (!qrInput.value.trim()) {
+      wrapper.classList.remove("active");
+      preValue = "";
+      downloadBtn.style.display = "none"; // Hide download button
+    }
+  });
+</script>
+
+
+  </body>
+</html>
