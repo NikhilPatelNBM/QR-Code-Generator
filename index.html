@@ -4,7 +4,6 @@
     <meta charset="utf-8"></meta>  
     <title>QR Code Generator Using HTML CSS and JAVASCRIPT</title>
     <style>
-
       /* Import Google Font - Poppins */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{
@@ -60,7 +59,7 @@ body.dark .form input::placeholder {
 
 body.dark .form button,
 body.dark #download {
-  background: #ffb701d9; 
+  background: #ffb701d9; /* Darker green */
 }
 
 body.dark .qr-code {
@@ -68,7 +67,7 @@ body.dark .qr-code {
 }
 
 .wrapper{
-  height: 265px;
+  height: 275px;
   max-width: 410px;
   background: #fff;
   border-radius: 7px;
@@ -77,7 +76,7 @@ body.dark .qr-code {
   box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 .wrapper.active{
-  height: 530px;
+  height: 550px;
 }
 header h1{
   font-size: 21px;
@@ -163,11 +162,11 @@ header p{
 
 @media (max-width: 430px){
   .wrapper{
-    height: 255px;
+    height: 250px;
     padding: 16px 20px;
   }
   .wrapper.active{
-    height: 510px;
+    height: 555px;
   }
   header p{
     color: #696969;
@@ -179,7 +178,6 @@ header p{
     width: 160px;
   }  
 }
-
 
     </style>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"></meta>
@@ -201,10 +199,13 @@ header p{
 </div>
 </div>
 
-  
+
+
 <script>
+
     const themeToggle = document.getElementById("theme-toggle");
 
+// Check saved theme from localStorage
 if (localStorage.getItem("theme") === "dark") {
   document.body.classList.add("dark");
   themeToggle.textContent = "☀️";
